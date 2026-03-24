@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Анастасия — Текстурная живопись</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --sand: #f5efe6;
+    --warm: #e8ddd0;
+    --terra: #c17f5a;
+    --deep: #3a2e28;
+    --ink: #1e1a17;
+    --muted: #8a7a6e;
+    --accent: #b85c38;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--sand);
+    color: var(--ink);
+    overflow-x: hidden;
+  }
+
+  /* ── GRAIN OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 80px 60px 80px 72px;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-tag {
+    font-family: 'Jost', sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s forwards;
+  }
+
+  .hero-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(52px, 7vw, 96px);
+    font-weight: 300;
+    line-height: 0.95;
+    color: var(--deep);
+    margin-bottom: 32px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.35s forwards;
+  }
+
+  .hero-name em {
+    font-style: italic;
+    color: var(--terra);
+  }
+
+  .hero-desc {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--muted);
+    max-width: 380px;
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.5s forwards;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1px solid var(--terra);
+    padding-bottom: 6px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.65s forwards;
+    transition: color 0.3s, gap 0.3s;
+  }
+  .hero-cta:hover { color: var(--terra); gap: 20px; }
+  .hero-cta svg { transition: transform 0.3s; }
+  .hero-cta:hover svg { transform: translateX(4px); }
+
+  .hero-right {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-img-wrap {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    animation: fadeIn 1.2s 0.1s forwards;
+  }
+
+  /* Placeholder art using CSS — replace src with real image */
+  .hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .hero-img-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg,
+      #d4a574 0%, #c17f5a 20%,
+      #8b5e3c 35%, #e8c49a 50%,
+      #b8744a 65%, #f0d4a8 80%,
+      #a0634a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-img-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 40% at 30% 60%, rgba(255,200,140,0.4) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 70% 30%, rgba(80,40,20,0.3) 0%, transparent 60%);
+  }
+
+  /* ── SPECIALTIES BAR ── */
+  .spec-bar {
+    background: var(--deep);
+    padding: 20px 72px;
+    display: flex;
+    gap: 40px;
+    overflow-x: auto;
+    align-items: center;
+  }
+
+  .spec-item {
+    font-size: 10px;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .spec-dot {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--terra);
+    flex-shrink: 0;
+  }
+
+  /* ── GALLERY ── */
+  .gallery-section {
+    padding: 120px 72px;
+  }
+
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 300;
+    color: var(--deep);
+    margin-bottom: 64px;
+  }
+
+  /* Carousel */
+  .carousel-wrap {
+    position: relative;
+  }
+
+  .carousel {
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    padding-bottom: 48px;
+  }
+  .carousel::-webkit-scrollbar { display: none; }
+
+  .card {
+    flex: 0 0 400px;
+    scroll-snap-align: start;
+    cursor: pointer;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s, transform 0.6s;
+  }
+
+  .card.visible { opacity: 1; transform: translateY(0); }
+
+  .card-img {
+    width: 100%;
+    aspect-ratio: 3/4;
+    object-fit: cover;
+    display: block;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card-placeholder {
+    width: 100%;
+    aspect-ratio: 3/4;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.6s ease;
+  }
+
+  .card:hover .card-placeholder { transform: scale(1.03); }
+
+  /* Different color palettes per card */
+  .card:nth-child(1) .card-placeholder { background: linear-gradient(160deg, #e8b88a 0%, #c17050 40%, #8b4a2a 70%, #d4956a 100%); }
+  .card:nth-child(2) .card-placeholder { background: linear-gradient(140deg, #4a6b8a 0%, #7fa8c8 30%, #c8dde8 60%, #2a4a6a 100%); }
+  .card:nth-child(3) .card-placeholder { background: linear-gradient(170deg, #6b8a4a 0%, #a8c87a 35%, #e8d8a0 65%, #4a6a2a 100%); }
+  .card:nth-child(4) .card-placeholder { background: linear-gradient(150deg, #8a4a6b 0%, #c87aa8 35%, #e8c0d8 65%, #5a2a4a 100%); }
+  .card:nth-child(5) .card-placeholder { background: linear-gradient(160deg, #8a6b2a 0%, #c8a850 35%, #e8d890 65%, #5a4a1a 100%); }
+  .card:nth-child(6) .card-placeholder { background: linear-gradient(145deg, #2a5a6b 0%, #5a9ab8 35%, #a8d0d8 65%, #1a3a4a 100%); }
+
+  .card-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 70% 50% at 40% 40%, rgba(255,255,255,0.15) 0%, transparent 60%);
+  }
+
+  .placeholder-label {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    font-size: 9px;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+  }
+
+  .card-info {
+    padding: 20px 0 0;
+  }
+
+  .card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--deep);
+    margin-bottom: 6px;
+  }
+
+  .card-meta {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+    margin-bottom: 10px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .card-tag {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terra);
+    border: 1px solid var(--terra);
+    padding: 4px 10px;
+  }
+
+  /* Carousel nav */
+  .carousel-nav {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .nav-btn {
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--warm);
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .nav-btn:hover { background: var(--deep); border-color: var(--deep); }
+  .nav-btn:hover svg path { stroke: white; }
+  .nav-btn svg path { stroke: var(--deep); transition: stroke 0.2s; }
+
+  /* ── LIGHTBOX ── */
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    background: rgba(20,16,13,0.95);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s;
+  }
+
+  .lightbox.open { opacity: 1; pointer-events: all; }
+
+  .lb-inner {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 0;
+    max-width: 1100px;
+    width: 90vw;
+    max-height: 90vh;
+    background: var(--ink);
+  }
+
+  .lb-img-area {
+    aspect-ratio: 1/1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .lb-placeholder {
+    width: 100%;
+    height: 100%;
+  }
+
+  .lb-info {
+    padding: 48px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .lb-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px;
+    font-weight: 300;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .lb-year {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    color: var(--terra);
+    margin-bottom: 24px;
+    text-transform: uppercase;
+  }
+
+  .lb-desc {
+    font-size: 13px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.55);
+    flex: 1;
+    margin-bottom: 32px;
+  }
+
+  .lb-specs {
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding-top: 24px;
+    margin-bottom: 32px;
+  }
+
+  .lb-spec-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+  }
+
+  .lb-spec-key {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .lb-spec-val {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .lb-buy {
+    display: block;
+    background: var(--terra);
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    padding: 16px;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    transition: background 0.2s;
+  }
+
+  .lb-buy:hover { background: var(--accent); }
+
+  .lb-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,0.4);
+    font-size: 24px;
+    line-height: 1;
+    transition: color 0.2s;
+    z-index: 10;
+  }
+
+  .lb-close:hover { color: white; }
+	
+	.lb-nav {
+		position:absolute;
+		top:50%;
+		transform:translateY(-50%);
+		background:rgba(0,0,0,0.4);
+		border:none;
+		color:white;
+		font-size:24px;
+		padding:10px;
+		cursor:pointer;
+	}
+
+	.lb-nav.prev { left:10px; }
+	.lb-nav.next { right:10px; }
+
+  /* ── CONTACT ── */
+  .contact-section {
+    background: var(--deep);
+    padding: 120px 72px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact-left .section-label { color: var(--terra); }
+
+  .contact-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4.5vw, 60px);
+    font-weight: 300;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+
+  .contact-title em { font-style: italic; color: var(--terra); }
+
+  .contact-sub {
+    font-size: 14px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.4);
+    line-height: 1.8;
+    max-width: 360px;
+  }
+
+  .links-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-top: 8px;
+  }
+
+  .link-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 24px 28px;
+    background: rgba(255,255,255,0.03);
+    text-decoration: none;
+    transition: background 0.2s;
+    border-left: 2px solid transparent;
+    transition: all 0.25s;
+  }
+
+  .link-item:hover {
+    background: rgba(255,255,255,0.06);
+    border-left-color: var(--terra);
+  }
+
+  .link-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(255,255,255,0.06);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .link-icon svg { width: 18px; height: 18px; }
+
+  .link-text {}
+
+  .link-platform {
+    font-size: 9px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terra);
+    margin-bottom: 4px;
+  }
+
+  .link-handle {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    padding: 32px 72px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .footer-copy {
+    font-size: 11px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: 0.05em;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-left { padding: 80px 32px 60px; justify-content: flex-start; }
+    .hero-right { height: 60vw; min-height: 300px; }
+    .spec-bar { padding: 20px 32px; }
+    .gallery-section { padding: 80px 24px; }
+    .card { flex: 0 0 280px; }
+    .contact-section { grid-template-columns: 1fr; padding: 80px 32px; gap: 48px; }
+    footer { padding: 24px 32px; flex-direction: column; gap: 8px; text-align: center; }
+    .lb-inner { grid-template-columns: 1fr; max-height: 95vh; overflow-y: auto; }
+    .lb-img-area { aspect-ratio: 4/3; }
+    .lb-info { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-tag">Художник · Казань</p>
+    <h1 class="hero-name">Анастасия</em></h1>
+    <p class="hero-desc">Её работы живут на границе абстракции и материального воплощения: густые слои пасты создают объём и игру света, а яркие акриловые краски придают динамику и эмоциональную глубину.</p>
+    <a href="#gallery" class="hero-cta">
+      Смотреть работы
+      <svg width="20" height="12" viewBox="0 0 20 12" fill="none"><path d="M1 6H19M14 1L19 6L14 11" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-wrap">
+      <img src="pict/hero.jpg" class="hero-img" alt="Анастасия">
+      <!-- <div class="hero-img-placeholder"></div> -->
+    </div>
+  </div>
+</section>
+
+<!-- ── SPEC BAR ── -->
+<div class="spec-bar">
+  <span class="spec-item">Текстурная паста</span>
+  <span class="spec-dot"></span>
+  <span class="spec-item">Акриловая живопись</span>
+  <span class="spec-dot"></span>
+  <span class="spec-item">Холст и дерево</span>
+  <span class="spec-dot"></span>
+  <span class="spec-item">Интерьерные картины</span>
+  <span class="spec-dot"></span>
+  <span class="spec-item">Декоративные панно</span>
+  <span class="spec-dot"></span>
+  <span class="spec-item">Авторские техники</span>
+</div>
+
+<!-- ── GALLERY ── -->
+<section class="gallery-section" id="gallery">
+  <p class="section-label">Портфолио</p>
+  <h2 class="section-title">Мои работы</h2>
+
+  <div class="carousel-wrap">
+    <div class="carousel" id="carousel"></div>
+
+    <div class="carousel-nav">
+      <button class="nav-btn" onclick="scrollCarousel(-1)" aria-label="Назад">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8L10 13" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="nav-btn" onclick="scrollCarousel(1)" aria-label="Вперёд">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M6 3L11 8L6 13" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ── LIGHTBOX ── -->
+<div class="lightbox" id="lightbox" onclick="closeLightboxOutside(event)">
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+  <div class="lb-inner">
+    <div class="lb-img-area" id="lbImg">
+			<button onclick="prevImage()" class="lb-nav prev">‹</button>
+			<button onclick="nextImage()" class="lb-nav next">›</button>		
+		</div>
+    <div class="lb-info">
+      <div>
+        <h2 class="lb-title" id="lbTitle"></h2>
+        <p class="lb-year" id="lbYear"></p>
+        <p class="lb-desc" id="lbDesc"></p>
+        <div class="lb-specs" id="lbSpecs"></div>
+      </div>
+      <a href="mailto:vanilla.art@gmail.com" class="lb-buy">Узнать цену и заказать</a>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONTACT ── -->
+<section class="contact-section" id="contact">
+  <div class="contact-left">
+    <p class="section-label">Связаться</p>
+    <h2 class="contact-title">Хотите эту работу у себя?</h2>
+    <p class="contact-sub">Пишите по любому из каналов — обычно отвечаю в течение дня. Принимаю заказы на авторские работы, а также картины в наличии.</p>
+  </div>
+  <div class="contact-right">
+    <div class="links-grid" id="contacts"></div>
+	</div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="footer-name"></span>
+  <span class="footer-copy">© 2025 Все права защищены</span>
+</footer>
+
+<script>
+	const paintings = [
+		{
+			title: "Девушка в огне",
+			year: "2026",
+			desc: "Тёплая абстрактная композиция на стыке земли и света. Густые рельефные слои пасты создают почти тактильную фактуру — картину хочется не только видеть, но и трогать.",
+			size: "30 × 40 см",
+			technique: "Акрил, текстурная паста",
+			base: "Холст",
+			status: "В наличии",
+			images: [
+				"pict/on_fire/01.jpg",
+				"pict/on_fire/02.jpg",
+				"pict/on_fire/03.jpg"
+			],
+		},
+		{
+			title: "Окно во двор",
+			year: "2025",
+			desc: "Городская геометрия растворяется в цвете. Вдохновлено ночной архитектурой и игрой отражений в стёклах высоких зданий.",
+			size: "30 × 40 см",
+			technique: "Акрил",
+			base: "Дерево",
+			status: "В наличии",
+			images: [
+				"pict/window/01.jpg",
+				"pict/window/02.jpg",
+				"pict/window/03.jpg",
+				"pict/window/04.jpg",
+				"pict/window/05.jpg"
+			],
+		},
+		{
+			title: "Карпы кои",
+			year: "2025",
+			desc: "Зелёные вспышки на фоне тёплой земли. Природа как абстракция — здесь нет конкретных деревьев, только ощущение первой зелени и запаха почвы.",
+			size: "30 × 40 см",
+			technique: "Акрил, текстурная паста",
+			base: "Холст",
+			status: "В наличии",
+			images: [
+				"pict/koi/01.jpg"
+			],
+		},
+		{
+			title: "Новогодняя булочка",
+			year: "2025",
+			desc: "Голубые глубины и белые пенные гребни. Медитативная работа — можно долго смотреть, каждый раз замечая новый слой.",
+			size: "20 × 20 см",
+			technique: "Акрил",
+			base: "Холст",
+			status: "Разыграна",
+			images: [
+				"pict/ng_01.jpg"
+			],
+		}
+	];
+	
+	const carousel = document.getElementById('carousel');
+
+	carousel.innerHTML = paintings.map((p, i) => `
+		<div class="card" onclick="openLightbox(${i})">
+			<div class="card-placeholder">
+				<img src="${p.images?.[0] || ''}" style="width:100%;height:100%;object-fit:cover;">
+			</div>
+			<div class="card-info">
+				<h3 class="card-title">${p.title}</h3>
+				<p class="card-meta">${p.technique} · ${p.size}${p.base ? ' · ' + p.base : ''}</p>
+				<p class="card-desc">${p.desc}</p>
+				<span class="card-tag">${p.status}</span>
+			</div>
+		</div>
+	`).join('');
+	
+	const contacts = [
+		{
+			type: "instagram",
+			label: "Instagram",
+			value: "@vanilla.texture.art",
+			url: "https://instagram.com/vanilla.texture.art"
+		},
+		{
+			type: "email",
+			label: "Email",
+			value: "vanilla.art@gmail.com",
+			url: "mailto:vanilla.art@gmail.com"
+		},
+		{
+			type: "phone",
+			label: "Телефон / WhatsApp",
+			value: "+7 910 123-45-67",
+			url: "tel:+79101234567"
+		}
+	];
+	
+	document.querySelectorAll('.card').forEach((card, i) => {
+		const img = paintings[i]?.images?.[0];
+		if (!img) return;
+
+		card.querySelector('.card-placeholder').innerHTML = `
+			<img src="${img}" style="width:100%;height:100%;object-fit:cover;">
+		`;
+	});
+
+	const contactsContainer = document.getElementById('contacts');
+
+	contactsContainer.innerHTML = contacts.map(c => `
+		<a href="${c.url}" target="_blank" class="link-item">
+			<div class="link-icon">
+				${getContactIcon(c.type)}
+			</div>
+			<div class="link-text">
+				<p class="link-platform">${c.label}</p>
+				<p class="link-handle">${c.value}</p>
+			</div>
+		</a>
+	`).join('');
+
+	function getContactIcon(type) {
+		switch(type) {
+			case "instagram":
+				return `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
+					<rect x="2" y="2" width="20" height="20" rx="5"/>
+					<circle cx="12" cy="12" r="4"/>
+					<circle cx="17.5" cy="6.5" r="1" fill="rgba(255,255,255,0.5)" stroke="none"/>
+				</svg>`;
+			case "behance":
+				return `<svg viewBox="0 0 24 24" fill="rgba(255,255,255,0.5)">
+					<rect width="24" height="24"/>
+				</svg>`;
+			case "email":
+				return `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
+					<rect x="2" y="4" width="20" height="16" rx="2"/>
+					<polyline points="2,4 12,13 22,4"/>
+				</svg>`;
+			case "phone":
+				return `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
+					<path d="M22 16.92v3a2 2 0 01-2.18 2"/>
+				</svg>`;
+		}
+	}
+
+	function openLightbox(i) {
+		currentPainting = i;
+		currentImageIndex = 0;
+
+		const p = paintings[i];
+
+		document.getElementById('lbTitle').textContent = p.title;
+		document.getElementById('lbYear').textContent = p.year + ' · ' + p.status;
+		document.getElementById('lbDesc').textContent = p.desc;
+
+		document.getElementById('lbSpecs').innerHTML = `
+			<div class="lb-spec-row"><span class="lb-spec-key">Размер</span><span class="lb-spec-val">${p.size}</span></div>
+			<div class="lb-spec-row"><span class="lb-spec-key">Техника</span><span class="lb-spec-val">${p.technique}</span></div>
+			<div class="lb-spec-row"><span class="lb-spec-key">Основа</span><span class="lb-spec-val">${p.base}</span></div>
+		`;
+
+		renderLightboxImage();
+
+		document.getElementById('lightbox').classList.add('open');
+		document.body.style.overflow = 'hidden';
+	}
+
+	function closeLightbox() {
+		document.getElementById('lightbox').classList.remove('open');
+		document.body.style.overflow = '';
+	}
+
+	function closeLightboxOutside(e) {
+		if (e.target === document.getElementById('lightbox')) closeLightbox();
+	}
+
+	document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+	function scrollCarousel(dir) {
+		const c = document.getElementById('carousel');
+		c.scrollBy({ left: dir * 424, behavior: 'smooth' });
+	}
+	
+	function renderLightboxImage() {
+		const p = paintings[currentPainting];
+		const img = p.images[currentImageIndex];
+
+		document.getElementById('lbImg').innerHTML = `
+			<img src="${img}" style="width:100%;height:100%;object-fit:cover;">
+			${p.images.length > 1 ? `
+				<button onclick="prevImage()" class="lb-nav prev">‹</button>
+				<button onclick="nextImage()" class="lb-nav next">›</button>
+			` : ''}
+		`;
+	}
+	
+	function nextImage() {
+		const p = paintings[currentPainting];
+		currentImageIndex = (currentImageIndex + 1) % p.images.length;
+		renderLightboxImage();
+	}
+
+	function prevImage() {
+		const p = paintings[currentPainting];
+		currentImageIndex = (currentImageIndex - 1 + p.images.length) % p.images.length;
+		renderLightboxImage();
+	}
+
+	// Scroll reveal for cards
+	const observer = new IntersectionObserver(entries => {
+		entries.forEach((e, i) => {
+			if (e.isIntersecting) {
+				setTimeout(() => e.target.classList.add('visible'), i * 100);
+			}
+		});
+	}, { threshold: 0.15 });
+
+	document.querySelectorAll('.card').forEach(c => observer.observe(c));
+</script>
+</body>
+</html>
