@@ -1037,9 +1037,11 @@ class Lightbox {
 		document.body.style.right = '';
 		document.body.style.width = '';
 
+		document.documentElement.style.scrollBehavior = 'auto';
 		window.scrollTo(0, scrollY);
+		document.documentElement.style.scrollBehavior = '';
 
-		lastFocusedElement?.focus();
+		lastFocusedElement?.focus({ preventScroll: true });
 	}
 
   render() {
@@ -1049,6 +1051,10 @@ class Lightbox {
     this.title.textContent = painting.title;
     this.year.textContent = painting.year;
     this.desc.textContent = painting.desc;
+
+		const hasMany = painting.images.length > 1;
+		this.prevBtn.style.display = hasMany ? '' : 'none';
+		this.nextBtn.style.display = hasMany ? '' : 'none';
     this.specs.innerHTML = `
       <div class="lb-spec-row"><span class="lb-spec-key">Техника</span><span class="lb-spec-val">${escapeHTML(painting.technique)}</span></div>
       <div class="lb-spec-row"><span class="lb-spec-key">Размер</span><span class="lb-spec-val">${escapeHTML(painting.size)}</span></div>
