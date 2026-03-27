@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Анастасия — Текстурная живопись</title>
+<title>Анастасия — Художник</title>
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,6 +18,10 @@
     --ink: #1e1a17;
     --muted: #8a7a6e;
     --accent: #b85c38;
+		
+		--z-noise: 10;
+		--z-overlay: 1000;
+		--z-modal: 1100;
   }
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -29,6 +33,7 @@
     background: var(--sand);
     color: var(--ink);
     overflow-x: hidden;
+		scrollbar-gutter: stable;
   }
 
   /* ── GRAIN OVERLAY ── */
@@ -38,7 +43,7 @@
     inset: 0;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
     pointer-events: none;
-    z-index: 9999;
+    z-index: var(--z-noise);
     opacity: 0.35;
   }
 
@@ -146,6 +151,7 @@
     display: flex;
     gap: 40px;
     overflow-x: auto;
+		scrollbar-width: none;
     align-items: center;
   }
 
@@ -263,7 +269,7 @@
     position: fixed;
     inset: 0;
     background: rgba(20,16,13,0.95);
-    z-index: 1000;
+    z-index: var(--z-modal);
     display: flex;
 		overflow-y: auto;
     align-items: center;
@@ -277,29 +283,35 @@
 
 	.lb-inner {
 		display: grid;
-		grid-template-columns: 1fr 340px;
+		grid-template-columns: auto 340px;
 		width: 90vw;
-		max-width: 1100px;
-		max-height: 90vh;
-		overflow: hidden;
+		max-width: 1000px;
+		overflow: visible;
 		background: var(--ink);
 	}
 	
 	.lb-img-area {
+		aspect-ratio: 3 / 4;
 		position: relative;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: #1F1B18;
+		max-height: calc(100dvh - 80px);
+	}
+	
+	.lb-media-content {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
 	}
 
 	.lb-img-area img,
 	.lb-img-area video {
 		max-width: 100%;
-		max-height: 70vh;
-		width: auto;
-		height: auto;
-		object-fit: contain;
+		max-height: 100%;
 	}
 
   .lb-info {
@@ -392,30 +404,33 @@
 
   .lb-close:hover { color: white; }
 	
+	/* NAV BUTTONS */
 	.lb-nav {
-		position: absolute;
-		top: 50%;
-		transform: translateY(-50%);
-		background: rgba(255, 255, 255, 0.1);
-		border: none;
-		color: white;
-		font-size: 28px;
-		padding: 12px;
-		border-radius: 50%; /* круглая кнопка */
-		cursor: pointer;
-		transition: all 0.3s ease;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+			position: absolute;
+			top: 50%;
+			transform: translateY(-50%);
+			width: 48px;
+			height: 48px;
+			border-radius: 8px;
+			border: 1px solid rgba(255, 255, 255, 0.2);
+			background: rgba(8, 6, 4, 0.6);
+      -webkit-backdrop-filter: blur(12px);
+			backdrop-filter: blur(12px);			
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: border-color 0.2s, background 0.2s, transform 0.2s;
+			-webkit-tap-highlight-color: transparent;
 	}
-
-	.lb-nav:hover,
-	.lb-nav:focus {
-		background: rgba(255, 255, 255, 0.25);
-		transform: translateY(-50%) scale(1.1);
-		outline: none;
+	.lb-nav svg { width: 18px; height: 18px; }
+	.lb-nav:hover, .lb-nav:focus-visible {
+			border-color: var(--terra);
+			background: rgba(193, 127, 90, 0.1);
+			transform: translateY(-50%) scale(1.06);
+			outline: none;
 	}
-
+	.lb-nav:active { transform: translateY(-50%) scale(0.94); }
 	.lb-nav.prev { left: 16px; }
 	.lb-nav.next { right: 16px; }
 
@@ -486,8 +501,6 @@
 
   .link-icon svg { width: 18px; height: 18px; }
 
-  .link-text {}
-
   .link-platform {
     font-size: 9px;
     font-weight: 500;
@@ -550,6 +563,9 @@
       height: 56vw;
       min-height: 320px;
     }
+		.hero-img {
+			object-position: 50% 30%;
+		}
 
     /* Spec bar */
     .spec-bar { padding: 18px 40px; }
@@ -581,7 +597,6 @@
     .lightbox {
       align-items: flex-start;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
     }
     .lb-inner {
 			display: grid;
@@ -599,7 +614,7 @@
 			justify-content: center;
 			align-items: center;
 			margin: 0 auto;
-			max-height: calc(100vh - 40px);
+			max-height: calc(100dvh - 40px);
     }
 		.lb-img-area img,
 		.lb-img-area video {
@@ -631,6 +646,9 @@
       height: 75vw;
       min-height: 260px;
     }
+		.hero-img {
+			object-position: 50% 35%;
+		}
 
     /* Spec bar */
     .spec-bar { padding: 16px 24px; gap: 24px; }
@@ -640,11 +658,6 @@
     .grid {
       grid-template-columns: 1fr;
       gap: 36px;
-    }
-
-    /* Card media: respect tall aspect ratios (up to 9:16) */
-    .card-media {
-      aspect-ratio: 3 / 4;
     }
 
     /* Contact */
@@ -665,7 +678,6 @@
     .lightbox {
       align-items: flex-start;
       overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
     }
     .lb-inner {
       grid-template-columns: 1fr;
@@ -682,7 +694,7 @@
 			justify-content: center;
 			align-items: center;
 			margin: 0 auto;
-			max-height: calc(100vh - 40px);
+			max-height: calc(100dvh - 40px);
     }
     .lb-img-area img,
     .lb-img-area video {
@@ -709,11 +721,15 @@
       font-size: 28px;
       color: rgba(255,255,255,0.7);
     }
-    /* Nav arrows: larger tap targets */
-		.lb-nav {
-			font-size: 32px;
-			padding: 16px;
+    /* Nav: увеличенный тач-таргет на мобиле */
+		.lb-nav { width: 44px; height: 44px; border-radius: 6px; }
+		
+		.lb-nav svg {
+			width: 18px;
+			height: 18px;
 		}
+		.lb-nav.prev { left: 8px; }
+		.lb-nav.next { right: 8px; }
   }
 </style>
 </head>
@@ -761,10 +777,18 @@
 </section>
 
 <!-- ── LIGHTBOX ── -->
-<div class="lightbox" id="lightbox" onclick="closeLightboxOutside(event)">
-  <button class="lb-close" onclick="closeLightbox()">×</button>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" tabindex="-1">
+  <button class="lb-close" id="lbClose" aria-label="Закрыть">×</button>
   <div class="lb-inner">
-    <div class="lb-img-area" id="lbImg"></div>
+    <div class="lb-img-area" id="lbMedia">
+			<div class="lb-media-content" id="lbMediaContent"></div>
+			<button class="lb-nav prev" id="lbPrev" aria-label="Предыдущее изображение">
+				<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+			</button>
+			<button class="lb-nav next" id="lbNext" aria-label="Следующее изображение">
+				<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+			</button>
+		</div>
     <div class="lb-info">
       <div>
         <h2 class="lb-title" id="lbTitle"></h2>
@@ -773,7 +797,7 @@
         <div class="lb-specs" id="lbSpecs"></div>
       </div>
       <a href="/cdn-cgi/l/email-protection#176176797e7b7b763976656357707a767e7b3974787a" class="lb-buy">Узнать цену и заказать</a>
-    </div>
+    </div>	
   </div>
 </div>
 
@@ -795,19 +819,29 @@
   <span class="footer-copy">© 2025 Все права защищены</span>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-	let currentPainting = 0;
-	let currentImageIndex = 0;
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+/* ====================== */
+/* ==== DATA / CONFIG ==== */
+/* ====================== */
+const lb = document.getElementById('lightbox');
+const lbMedia = document.getElementById('lbMedia');
+const lbTitle = document.getElementById('lbTitle');
+const lbYear = document.getElementById('lbYear');
+const lbDesc = document.getElementById('lbDesc');
+const lbSpecs = document.getElementById('lbSpecs');
 
-	const paintings = [
-		{
-			title: "Девушка в огне",
-			year: "2026",
-			desc: "Тёплая абстрактная композиция на стыке земли и света. Густые рельефные слои пасты создают почти тактильную фактуру — картину хочется не только видеть, но и трогать.",
-			size: "30 × 40 см",
-			technique: "Акрил, текстурная паста",
-			base: "Холст",
-			status: "В наличии",
+let lastFocusedElement = null;
+
+const paintings = [
+  {
+    title: "Девушка в огне",
+    year: "2026",
+    desc: "Тёплая абстрактная композиция на стыке земли и света. Густые рельефные слои пасты создают почти тактильную фактуру — картину хочется не только видеть, но и трогать.",
+    size: "30 × 40 см",
+    technique: "Акрил, текстурная паста",
+    base: "Холст",
+    status: "В наличии",
     images: [
       { type: "image", src: "pict/on_fire/01.jpg" },
       { type: "image", src: "pict/on_fire/02.jpg" },
@@ -815,242 +849,313 @@
       { type: "image", src: "pict/on_fire/04.jpg" },
       { type: "image", src: "pict/on_fire/05.jpg" },
       { type: "video", src: "pict/on_fire/video.webm" }
-			],
-		},
-		{
-			title: "Окно во двор",
-			year: "2025",
-			desc: "Городская геометрия растворяется в цвете. Вдохновлено ночной архитектурой и игрой отражений в стёклах высоких зданий.",
-			size: "30 × 40 см",
-			technique: "Акрил",
-			base: "Дерево",
-			status: "В наличии",
+    ],
+  },
+  {
+    title: "Окно во двор",
+    year: "2025",
+    desc: "Городская геометрия растворяется в цвете. Вдохновлено ночной архитектурой и игрой отражений в стёклах высоких зданий.",
+    size: "30 × 40 см",
+    technique: "Акрил",
+    base: "Дерево",
+    status: "В наличии",
     images: [
-      
       { type: "image", src: "pict/window/02.jpg" },
       { type: "image", src: "pict/window/03.jpg" },
       { type: "image", src: "pict/window/04.jpg" },
       { type: "image", src: "pict/window/05.jpg" },
-			],
-		},
-		{
-			title: "Карпы кои",
-			year: "2025",
-			desc: "Зелёные вспышки на фоне тёплой земли. Природа как абстракция — здесь нет конкретных деревьев, только ощущение первой зелени и запаха почвы.",
-			size: "30 × 40 см",
-			technique: "Акрил, текстурная паста",
-			base: "Холст",
-			status: "В наличии",
-			images: [
-				{ type: "image", src: "pict/koi/01.jpg" },
-			],
-		}
-	];
-	
-	const grid = document.getElementById('galleryGrid');
+    ],
+  },
+  {
+    title: "Карпы кои",
+    year: "2025",
+    desc: "Зелёные вспышки на фоне тёплой земли. Природа как абстракция — здесь нет конкретных деревьев, только ощущение первой зелени и запаха почвы.",
+    size: "30 × 40 см",
+    technique: "Акрил, текстурная паста",
+    base: "Холст",
+    status: "В наличии",
+    images: [
+      { type: "image", src: "pict/koi/01.jpg" },
+    ],
+  }
+];
 
-	grid.innerHTML = paintings.map((p, i) => {
-		const first = p.images[0];
+const contacts = [
+  { type: "bublegram", label: "Bublegram", value: "@vanilla.texture.art", url: "https://instagram.com/vanilla.texture.art" },
+  { type: "email", label: "Email", value: "vanilla.art@bubumail.com", url: "mailto:vanilla.art@bubumail.com" },
+  { type: "phone", label: "Телефон / Max", value: "+7 910 123-45-67", url: "tel:+79101234567" }
+];
 
-		return `
-			<div class="card" onclick="openLightbox(${i})">
-				<div class="card-media">
-					${renderMedia(first, true)}
-				</div>
+const CONTACT_ICONS = {
+  bublegram: `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="rgba(255,255,255,0.5)" stroke="none"/>
+					</svg>`,
+  email: `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <polyline points="2,4 12,13 22,4"/>
+					</svg>`,
+  phone: `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
+        <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 13 19.79 19.79 0 01.88 4.36 2 2 0 012.86 2.18L5.9 2a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.72 6.72l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
+				</svg>`
+};
 
-				<div class="card-info">
-					<h3 class="card-title">${p.title}</h3>
-					<p class="card-meta">${p.technique} · ${p.size}</p>
-					<p class="card-desc">${p.desc}</p>
-					<span class="card-tag">${p.status}</span>
-				</div>
-			</div>
-		`;
-	}).join('');
-	
-	const contacts = [
-		{
-			type: "bublegram",
-			label: "Bublegram",
-			value: "@vanilla.texture.art",
-			url: "https://instagram.com/vanilla.texture.art"
-		},
-		{
-			type: "email",
-			label: "Email",
-			value: "vanilla.art@gmail.com",
-			url: "mailto:vanilla.art@gmail.com"
-		},
-		{
-			type: "phone",
-			label: "Телефон / Max",
-			value: "+7 910 123-45-67",
-			url: "tel:+79101234567"
-		}
-	];
+function getContactIcon(type) {
+  return CONTACT_ICONS[type] || '';
+}
 
-	const contactsContainer = document.getElementById('contacts');
+/* ======================== */
+/* ==== HELPER FUNCTIONS === */
+/* ======================== */
+function escapeHTML(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
 
-	contactsContainer.innerHTML = contacts.map(c => `
-		<a href="${c.url}" target="_blank" class="link-item">
-			<div class="link-icon">
-				${getContactIcon(c.type)}
-			</div>
-			<div class="link-text">
-				<p class="link-platform">${c.label}</p>
-				<p class="link-handle">${c.value}</p>
-			</div>
-		</a>
-	`).join('');
-	
-	function renderMedia(item, preview = false) {
-		if (!item) return '';
+/* ============================ */
+/* ==== LIGHTBOX CLASS ========= */
+/* ============================ */
+class Lightbox {
+	constructor({ root, paintings }) {
+		this.paintings = paintings;
+		this.currentPainting = 0;
+		this.currentImage = 0;
 
-		if (typeof item === "string") {
-			return `<img src="${item}" loading="lazy">`;
-		}
+		this.lb = root;
+		this.mediaArea = root.querySelector('#lbMedia');
+		this.mediaContent = root.querySelector('#lbMediaContent');
+		this.title = root.querySelector('#lbTitle');
+		this.year = root.querySelector('#lbYear');
+		this.desc = root.querySelector('#lbDesc');
+		this.specs = root.querySelector('#lbSpecs');
+		this.closeBtn = root.querySelector('#lbClose');
+		this.prevBtn = root.querySelector('#lbPrev');
+		this.nextBtn = root.querySelector('#lbNext');
 
-		if (item.type === "video") {
-			return `
-				<video 
-					src="${item.src}" 
-					muted 
-					autoplay 
-					loop 
-					playsinline
-					preload="metadata">
-				</video>
-			`;
-		}
+    this.bindEvents();
+  }
 
-		return `<img src="${item.src}" loading="lazy">`;
-	}
+  bindEvents() {
+    this.closeBtn.addEventListener('click', () => this.close());
+    this.prevBtn.addEventListener('click', () => this.prev());
+    this.nextBtn.addEventListener('click', () => this.next());
+    this.lb.addEventListener('click', e => { if(e.target===this.lb) this.close(); });
+		this.lb.addEventListener('keydown', e => {
+			if (e.key !== 'Tab') return;
 
-	function getContactIcon(type) {
-		switch(type) {
-			case "bublegram":
-				return `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
-					<rect x="2" y="2" width="20" height="20" rx="5"/>
-					<circle cx="12" cy="12" r="4"/>
-					<circle cx="17.5" cy="6.5" r="1" fill="rgba(255,255,255,0.5)" stroke="none"/>
-				</svg>`;
-			case "email":
-				return `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
-					<rect x="2" y="4" width="20" height="16" rx="2"/>
-					<polyline points="2,4 12,13 22,4"/>
-				</svg>`;
-			case "phone":
-				return `<svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.5">
-            <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 13 19.79 19.79 0 01.88 4.36 2 2 0 012.86 2.18L5.9 2a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 9.91a16 16 0 006.72 6.72l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/>
-          </svg>`;
-		}
-	}
-	
-	function preloadMedia(painting) {
-		painting.images.forEach(item => {
-			if (item.type === "video") {
-				const video = document.createElement('video');
-				video.src = item.src;
-				video.preload = "metadata";
+			const focusable = this.lb.querySelectorAll(
+				'button, a, [tabindex]:not([tabindex="-1"])'
+			);
+
+			if (!focusable.length) return;
+
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+
+			if (e.shiftKey && document.activeElement === first) {
+				e.preventDefault();
+				last.focus();
+			} else if (!e.shiftKey && document.activeElement === last) {
+				e.preventDefault();
+				first.focus();
 			}
-		});
-	}
-
-	function openLightbox(i) {
-		currentPainting = i;
-		currentImageIndex = 0;
-
-		const p = paintings[i];
-		
-		preloadMedia(p);
-
-		document.getElementById('lbTitle').textContent = p.title;
-		document.getElementById('lbYear').textContent = p.year + ' · ' + p.status;
-		document.getElementById('lbDesc').textContent = p.desc;
-
-		document.getElementById('lbSpecs').innerHTML = `
-			<div class="lb-spec-row"><span class="lb-spec-key">Размер</span><span class="lb-spec-val">${p.size}</span></div>
-			<div class="lb-spec-row"><span class="lb-spec-key">Техника</span><span class="lb-spec-val">${p.technique}</span></div>
-			<div class="lb-spec-row"><span class="lb-spec-key">Основа</span><span class="lb-spec-val">${p.base}</span></div>
-		`;
-
-		renderLightboxImage();
-
-		document.getElementById('lightbox').classList.add('open');
-		document.body.style.overflow = 'hidden';
-	}
-
-	function closeLightbox() {
-		const videos = document.querySelectorAll('#lbImg video');
-		videos.forEach(v => v.pause());
-
-		document.getElementById('lightbox').classList.remove('open');
-		document.body.style.overflow = '';
-	}
-
-	function closeLightboxOutside(e) {
-		if (e.target === document.getElementById('lightbox')) closeLightbox();
-	}
-
-	document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+		});		
+    document.addEventListener('keydown', e => {
+      if (!this.lb.classList.contains('open')) return;
+      if (e.key === 'Escape') this.close();
+      if (e.key === 'ArrowLeft') this.prev();
+      if (e.key === 'ArrowRight') this.next();
+    });
+    this.mediaArea.addEventListener('touchstart', e => this.startTouch(e), {passive:true});
+    this.mediaArea.addEventListener('touchmove', e => this.moveTouch(e), {passive:true});
+    this.mediaArea.addEventListener('touchend', e => this.endTouch(e), {passive:true});
+		this.mediaArea.addEventListener('click', e => {
+			if (e.target.tagName === 'IMG' || e.target.tagName === 'VIDEO') {
+				this.next();
+			}
+		});	
+  }
 	
-	function renderLightboxImage() {
-		const p = paintings[currentPainting];
-		const item = p.images[currentImageIndex];
+	updateMedia(item, alt) {
+		let el = this.mediaContent.firstElementChild;
 
-		document.getElementById('lbImg').innerHTML = `
-			${renderMedia(item)}
-			${p.images.length > 1 ? `
-				<button onclick="prevImage()" class="lb-nav prev">‹</button>
-				<button onclick="nextImage()" class="lb-nav next">›</button>
-			` : ''}
-		`;
-	}
-	
-	function nextImage() {
-		const p = paintings[currentPainting];
-		currentImageIndex = (currentImageIndex + 1) % p.images.length;
-		renderLightboxImage();
-	}
-
-	function prevImage() {
-		const p = paintings[currentPainting];
-		currentImageIndex = (currentImageIndex - 1 + p.images.length) % p.images.length;
-		renderLightboxImage();
-	}
-
-	// Scroll reveal for cards
-	const observer = new IntersectionObserver(entries => {
-		entries.forEach((e, i) => {
-			if (e.isIntersecting) {
-				setTimeout(() => e.target.classList.add('visible'), 100 * i);
+		if (!el || (item.type === 'video' && el.tagName !== 'VIDEO') || (item.type !== 'video' && el.tagName !== 'IMG')) {
+			this.mediaContent.innerHTML = '';
+			el = document.createElement(item.type === 'video' ? 'video' : 'img');
+			this.mediaContent.appendChild(el);
 		}
-	});
-}, { threshold: 0.15 });
 
-document.querySelectorAll('.card').forEach(c => observer.observe(c));
-
-// Touch swipe for lightbox
-let touchStartX = 0;
-let touchStartY = 0;
-
-document.getElementById('lightbox').addEventListener('touchstart', e => {
-	touchStartX = e.touches[0].clientX;
-	touchStartY = e.touches[0].clientY;
-}, { passive: true });
-
-document.getElementById('lightbox').addEventListener('touchend', e => {
-	const dx = e.changedTouches[0].clientX - touchStartX;
-	const dy = e.changedTouches[0].clientY - touchStartY;
-	// Only trigger swipe if horizontal movement dominates
-	if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 48) {
-		const p = paintings[currentPainting];
-		if (p.images.length > 1) {
-			dx < 0 ? nextImage() : prevImage();
+		if (item.type === 'video') {
+			el.src = item.src;
+			el.muted = true;
+			el.autoplay = true;
+			el.loop = true;
+			el.playsInline = true;
+			el.setAttribute('aria-label', alt || 'Видео');
+		} else {
+			el.src = item.src;
+			el.alt = alt || '';
+			el.loading = 'eager';
+			el.decoding = 'async';
 		}
 	}
-}, { passive: true });
 
-</script> 
+	open(paintingIndex=0, imageIndex=0) {
+		lastFocusedElement = document.activeElement;
+
+		this.currentPainting = paintingIndex;
+		this.currentImage = imageIndex;
+
+		this.render();
+		this.lb.classList.add('open');
+
+		const scrollY = window.scrollY;
+
+		document.body.style.position = 'fixed';
+		document.body.style.top = `-${scrollY}px`;
+		document.body.style.left = '0';
+		document.body.style.right = '0';
+		document.body.style.width = '100%';
+
+		document.body.dataset.scrollY = scrollY;
+
+		this.lb.focus();
+	}
+
+	close() {
+		this.mediaArea.querySelectorAll('video').forEach(v => v.pause());
+
+		this.lb.classList.remove('open');
+
+		const scrollY = parseInt(document.body.dataset.scrollY || '0', 10);
+
+		document.body.style.position = '';
+		document.body.style.top = '';
+		document.body.style.left = '';
+		document.body.style.right = '';
+		document.body.style.width = '';
+
+		window.scrollTo(0, scrollY);
+
+		lastFocusedElement?.focus();
+	}
+
+  render() {
+    const painting = this.paintings[this.currentPainting];
+    const media = painting.images[this.currentImage];
+    this.updateMedia(media, painting.title);
+    this.title.textContent = painting.title;
+    this.year.textContent = painting.year;
+    this.desc.textContent = painting.desc;
+    this.specs.innerHTML = `
+      <div class="lb-spec-row"><span class="lb-spec-key">Техника</span><span class="lb-spec-val">${escapeHTML(painting.technique)}</span></div>
+      <div class="lb-spec-row"><span class="lb-spec-key">Размер</span><span class="lb-spec-val">${escapeHTML(painting.size)}</span></div>
+      <div class="lb-spec-row"><span class="lb-spec-key">Основа</span><span class="lb-spec-val">${escapeHTML(painting.base)}</span></div>
+    `;
+  }
+
+  prev() { this.changeImage(-1); }
+  next() { this.changeImage(1); }
+
+	changeImage(dir) {
+		const imgs = this.paintings[this.currentPainting].images;
+		this.currentImage = (this.currentImage + dir + imgs.length) % imgs.length;
+
+		const nextIndex = (this.currentImage + 1) % imgs.length;
+		const next = imgs[nextIndex];
+		if (next?.type === 'image') {
+			const img = new Image();
+			img.src = next.src;
+		}
+
+		this.render();
+	}
+
+  /* === Touch Swipe Logic === */
+  startTouch(e) { this.touchStartX = e.touches[0].clientX; }
+  moveTouch(e) { this.touchEndX = e.touches[0].clientX; }
+  endTouch() {
+    if (this.touchStartX - this.touchEndX > 50) this.next();
+    if (this.touchStartX - this.touchEndX < -50) this.prev();
+  }
+}
+
+/* ============================ */
+/* ==== GALLERY RENDER ========= */
+/* ============================ */
+function renderGallery(paintings, lightboxInstance) {
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = paintings.map((p, i) => {
+    const first = p.images[0];
+    return `
+      <div class="card" data-index="${i}">
+				<div class="card-media">
+					${first.type === 'video'
+						? `<video src="${escapeHTML(first.src)}" muted loop playsinline></video>`
+						: `<img src="${escapeHTML(first.src)}" alt="${escapeHTML(p.title)}" loading="lazy">`}
+				</div>
+        <div class="card-info">
+          <h3 class="card-title">${escapeHTML(p.title)}</h3>
+          <p class="card-meta">${escapeHTML(p.technique)} · ${escapeHTML(p.size)}</p>
+          <p class="card-desc">${escapeHTML(p.desc)}</p>
+          <span class="card-tag">${escapeHTML(p.status)}</span>
+        </div>
+      </div>`;
+  }).join('');
+
+  grid.addEventListener('click', e => {
+    const card = e.target.closest('.card');
+    if (!card) return;
+    lightboxInstance.open(Number(card.dataset.index), 0);
+  });
+}
+
+function observeCards() {
+  const cards = document.querySelectorAll('.card');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.15
+  });
+
+  cards.forEach(card => observer.observe(card));
+}
+
+/* ============================ */
+/* ==== CONTACTS RENDER ======= */
+/* ============================ */
+function renderContacts(contacts) {
+  const container = document.getElementById('contacts');
+  container.innerHTML = contacts.map(c => `
+    <a href="${escapeHTML(c.url)}" class="link-item" target="_blank" rel="noopener noreferrer">
+      <div class="link-icon">${getContactIcon(c.type)}</div>
+      <div class="link-text">
+        <p class="link-platform">${escapeHTML(c.label)}</p>
+        <p class="link-handle">${escapeHTML(c.value)}</p>
+      </div>
+    </a>
+  `).join('');
+}
+
+/* ============================ */
+/* ==== INIT ================== */
+/* ============================ */
+const lightbox = new Lightbox({
+  root: document.getElementById('lightbox'),
+  paintings
+});
+renderGallery(paintings, lightbox);
+observeCards();
+renderContacts(contacts);
+
+</script>
 </body>
 </html>
