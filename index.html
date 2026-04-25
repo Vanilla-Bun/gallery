@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="robots" content="noindex, nofollow" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Анастасия — Художник</title>
+<title>Анастасия – Художник</title>
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -136,7 +136,7 @@
     animation: fadeIn 1.2s 0.1s forwards;
   }
 
-  /* Placeholder art using CSS — replace src with real image */
+  /* Placeholder art using CSS – replace src with real image */
   .hero-img {
     width: 100%;
     height: 100%;
@@ -302,16 +302,19 @@
 	.lb-media-content {
 		width: 100%;
 		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		position: relative;
 		overflow: hidden;
 	}
 
 	.lb-img-area img,
 	.lb-img-area video {
+	  position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 		max-width: 100%;
 		max-height: 100%;
+		object-fit: cover;
 	}
 
   .lb-info {
@@ -622,7 +625,7 @@
 			max-height: 100%;
 			width: auto;
 			height: auto;
-			object-fit: contain;
+			object-fit: cover;
 			display: block;
 		}
     .lb-info {
@@ -702,7 +705,7 @@
 			max-height: 100%;
 			width: auto;
 			height: auto;
-      object-fit: contain;
+      object-fit: cover;
     }
     .lb-info {
       padding: 24px 20px 48px;
@@ -805,8 +808,8 @@
 <section class="contact-section" id="contact">
   <div class="contact-left">
     <p class="section-label">Связаться</p>
-    <h2 class="contact-title">Хотите эту работу у себя?</h2>
-    <p class="contact-sub">Пишите по любому из каналов — обычно отвечаю в течение дня. Принимаю заказы на авторские работы, а также картины в наличии.</p>
+    <h2 class="contact-title">Хотите эту работу себе?</h2>
+    <p class="contact-sub">Пишите по любому из каналов – обычно отвечаю в течение дня. Принимаю заказы на авторские работы, а также картины в наличии.</p>
   </div>
   <div class="contact-right">
     <div class="links-grid" id="contacts"></div>
@@ -816,7 +819,7 @@
 <!-- ── FOOTER ── -->
 <footer>
   <span class="footer-name"></span>
-  <span class="footer-copy">© 2025 Все права защищены</span>
+  <span class="footer-copy">© 2026 Все права защищены</span>
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
@@ -835,47 +838,52 @@ let lastFocusedElement = null;
 
 const paintings = [
   {
-    title: "Девушка в огне",
+    title: "Сгорая в воспоминаниях",
     year: "2026",
-    desc: "Тёплая абстрактная композиция на стыке земли и света. Густые рельефные слои пасты создают почти тактильную фактуру — картину хочется не только видеть, но и трогать.",
+    desc: "Эта работа родилась под песни группы Билборды — «Снег» и «Встретимся в аду».",
     size: "30 × 40 см",
-    technique: "Акрил, текстурная паста",
-    base: "Холст",
+    technique: "Акриловые краски",
+    base: "Холст на подрамнике",
     status: "В наличии",
     images: [
-      { type: "image", src: "pict/on_fire/01.jpg" },
-      { type: "image", src: "pict/on_fire/02.jpg" },
-      { type: "image", src: "pict/on_fire/03.jpg" },
-      { type: "image", src: "pict/on_fire/04.jpg" },
-      { type: "image", src: "pict/on_fire/05.jpg" },
-      { type: "video", src: "pict/on_fire/video.webm" }
+      { type: "image", src: "pict/burning-memories/burning-memories-front.jpg" },
+      { type: "image", src: "pict/burning-memories/burning-memories-mockup.png" },
+			{ type: "video", src: "pict/burning-memories/burning-memories-video.webm" },
+      { type: "image", src: "pict/burning-memories/burning-memories-detail-1.jpg" },
+      { type: "image", src: "pict/burning-memories/burning-memories-detail-2.jpg" },
+      { type: "image", src: "pict/burning-memories/burning-memories-angle.jpg" }
     ],
   },
   {
-    title: "Окно во двор",
+    title: "Кои: гармония в движении",
     year: "2025",
-    desc: "Городская геометрия растворяется в цвете. Вдохновлено ночной архитектурой и игрой отражений в стёклах высоких зданий.",
-    size: "30 × 40 см",
-    technique: "Акрил",
-    base: "Дерево",
+    desc: "В этом пространстве всё движется — но без спешки.",
+    size: "40 × 50 см",
+    technique: "Текстурная паста, акриловые краски",
+    base: "Холст на подрамнике",
     status: "В наличии",
     images: [
-      { type: "image", src: "pict/window/02.jpg" },
-      { type: "image", src: "pict/window/03.jpg" },
-      { type: "image", src: "pict/window/04.jpg" },
-      { type: "image", src: "pict/window/05.jpg" },
+      { type: "image", src: "pict/koi-harmony/koi-harmony-front.jpg" },
+      { type: "image", src: "pict/koi-harmony/koi-harmony-mockup.jpg" },
+      { type: "image", src: "pict/koi-harmony/koi-harmony-texture.jpg" },
+      { type: "image", src: "pict/koi-harmony/koi-harmony-angle.jpg" }
     ],
-  },
+  },	
   {
-    title: "Карпы кои",
+    title: "Свет в привычном",
     year: "2025",
-    desc: "Зелёные вспышки на фоне тёплой земли. Природа как абстракция — здесь нет конкретных деревьев, только ощущение первой зелени и запаха почвы.",
+    desc: "Иногда свет возвращается не внезапно, а мягко — сквозь окно, знакомый угол, привычный взгляд.",
     size: "30 × 40 см",
-    technique: "Акрил, текстурная паста",
-    base: "Холст",
+    technique: "Текстурная паста, акриловые краски",
+    base: "Холст на подрамнике",
     status: "В наличии",
     images: [
-      { type: "image", src: "pict/koi/01.jpg" },
+      { type: "image", src: "pict/light-in-ordinary/light-in-ordinary-front.jpg" },
+      { type: "image", src: "pict/light-in-ordinary/light-in-ordinary-mockup.png" },
+      { type: "image", src: "pict/light-in-ordinary/light-in-ordinary-detail-1.jpg" },
+      { type: "image", src: "pict/light-in-ordinary/light-in-ordinary-detail-2.jpg" },
+      { type: "image", src: "pict/light-in-ordinary/light-in-ordinary-perspective.jpg" },
+      { type: "image", src: "pict/light-in-ordinary/light-in-ordinary-angle.jpg" },
     ],
   }
 ];
